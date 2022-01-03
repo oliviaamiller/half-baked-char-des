@@ -18,7 +18,7 @@ const headEl = document.getElementById('head');
 const middleEl = document.getElementById('middle');
 const bottomEl = document.getElementById('bottom');
 const reportEl = document.getElementById('report');
-const chatchphrasesEl = document.getElementById('chatchphrases');
+const catchphrasesEl = document.getElementById('chatchphrases');
 const catchphraseInput = document.getElementById('catchphrase-input');
 const catchphraseButton = document.getElementById('catchphrase-button');
 const logoutButton = document.getElementById('logout');
@@ -30,9 +30,12 @@ let bottomCount = 0;
 
 headDropdown.addEventListener('change', async() => {
     // increment the correct count in state
+    headCount++;
 
     // update the head in supabase with the correct data
-    refreshData();
+    const updatedChar = await updateHead(headDropdown.value);
+
+    refreshData(updatedChar);
 });
 
 
@@ -85,13 +88,22 @@ function displayStats() {
 
 
 async function fetchAndDisplayCharacter() {
-    // fetch the caracter from supabase
+    // fetch the character from supabase
+    const character = await getCharacter();
 
     // if the character has a head, display the head in the dom
+    if (character.head.value) {
+        headEl.src = `../assets/${headDropdown.value}-head.png`;
+    }
+    
     // if the character has a middle, display the middle in the dom
+    
+
     // if the character has a pants, display the pants in the dom
     
+    
     // loop through catchphrases and display them to the dom (clearing out old dom if necessary)
+    
 }
 
 function refreshData() {

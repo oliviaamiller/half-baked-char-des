@@ -16,8 +16,14 @@ export async function createCharacter(character){
 export async function updateHead(value){
     const currentUserId = client.auth.user().id;
 
+    const response = await client
     // in supabase, update the head property
+        .from('characters')
+        .update({ head: value })
+
     // for the character whose user_id match's the currently logged in user's id
+        .match({ user_id: currentUserId.user.id })
+        .single();
 
     return checkError(response);    
 }
