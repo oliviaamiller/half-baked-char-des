@@ -29,7 +29,6 @@ let headCount = 0;
 let middleCount = 0;
 let bottomCount = 0;
 
-let catchphrases = [];
 
 headDropdown.addEventListener('change', async() => {
     // increment the correct count in state
