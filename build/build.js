@@ -2,7 +2,7 @@ import {
     checkAuth, 
     getCharacter,
     logout, 
-    createCharacter,
+    createDefaultCharacter,
     updateBottom,
     updateHead,
     updateMiddle,
@@ -18,10 +18,11 @@ const headEl = document.getElementById('head');
 const middleEl = document.getElementById('middle');
 const bottomEl = document.getElementById('bottom');
 const reportEl = document.getElementById('report');
-const catchphrasesEl = document.getElementById('chatchphrases');
+const catchphrasesEl = document.getElementById('catchphrases');
 const catchphraseInput = document.getElementById('catchphrase-input');
 const catchphraseButton = document.getElementById('catchphrase-button');
 const logoutButton = document.getElementById('logout');
+
 
 // we're still keeping track of 'this session' clicks, so we keep these lets
 let headCount = 0;
@@ -60,40 +61,27 @@ bottomDropdown.addEventListener('change', async() => {
 });
 
 catchphraseButton.addEventListener('click', async() => {
-
-    console.log(catchphraseInput.value);
-
     // go fetch the character and its old catchphrases
-    await getCharacter();
+    const character = await getCharacter();
 
-    // update the catchphrases array locally by pushing the new catchphrase into the old array
-    const newCatchphrase = catchphraseInput.value;
-
-    catchphrases.push(newCatchphrase);
+    // update the catchphrases array by pushing the new catchphrase into the old array
+    character.catchphrases.push(catchphraseInput.value);
 
     // update the catchphrases in supabase by passing the mutated array to the updateCatchphrases function
-    await updateChatchphrases(newCatchphrase);
-
-    catchphraseInput.value = '';
+    await updateChatchphrases(character.catchphrases);
 
     refreshData();
 });
 
 window.addEventListener('load', async() => {
     // on load, attempt to fetch this user's character
-    let character = await getCharacter();
+    const character = await getCharacter();
 
     // if this user turns out not to have a character
     if (!character) {
     // create a new character with correct defaults for all properties (head, middle, bottom, catchphrases)
-        const newCharacter = {
-            head: 'bird',
-            middle: 'blue',
-            bottom: 'leg',
-            catchphrases: [],
-        };
-
-        await createCharacter(newCharacter);
+        
+        await createDefaultCharacter();
     }
     // and put the character's catchphrases in state (we'll need to hold onto them for an interesting reason);
     // then call the refreshData function to set the DOM with the updated data
@@ -130,9 +118,9 @@ async function fetchAndDisplayCharacter() {
     }
     
     // loop through catchphrases and display them to the dom (clearing out old dom if necessary)
-    catchphrasesEl.textContent = '';
 
-    for (let catchphrase of catchphrases) {
+    for (let catchphrase of character.catchphrases) {
+
         const newCatchphraseEl = document.createElement('p');
 
         newCatchphraseEl.classList.add('new-catchphrase');
@@ -140,6 +128,7 @@ async function fetchAndDisplayCharacter() {
         newCatchphraseEl.textContent = catchphrase;
 
         catchphrasesEl.append(newCatchphraseEl);
+    
     }
 }
 
