@@ -3,17 +3,16 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsI
 
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-export async function createCharacter(character){
-    const newCharacter = {
-        ...character, 
-        user_id: client.auth.user().id, 
-    };
-
+export async function createDefaultCharacter(){
     // use the newCharacter to create a single new character for this user in supabase
     const response = await client 
         .from('characters')
-        .insert([newCharacter])
-        .single();
+        .insert([{
+            head: '',
+            middle: '',
+            bottom: '',
+            catchphrases: []
+        }]);
 
     return checkError(response);
 }
@@ -68,7 +67,9 @@ export async function updateBottom(value){
 export async function updateChatchphrases(value){
     const currentUserId = client.auth.user().id;
     // get access to current characters catchphrases
-    // - update the catchphrases, push value to catchphrases array
+
+
+    // update the catchphrases, push value to catchphrases array
 
     
     console.log(value);
