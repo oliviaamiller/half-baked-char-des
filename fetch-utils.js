@@ -10,14 +10,25 @@ export async function createCharacter(character){
     };
 
     // use the newCharacter to create a single new character for this user in supabase
+    const response = await client 
+        .from('characters')
+        .insert([newCharacter])
+        .single();
+
     return checkError(response);
 }
 
 export async function updateHead(value){
     const currentUserId = client.auth.user().id;
 
+    const response = await client
     // in supabase, update the head property
+        .from('characters')
+        .update({ head: value })
+
     // for the character whose user_id match's the currently logged in user's id
+        .match({ user_id: currentUserId })
+        .single();
 
     return checkError(response);    
 }
@@ -26,8 +37,14 @@ export async function updateHead(value){
 export async function updateMiddle(value){
     const currentUserId = client.auth.user().id;
 
+    const response = await client
     // in supabase, update the middle property
+        .from('characters')
+        .update({ middle: value })
+
     // for the character whose user_id match's the currently logged in user's id
+        .match({ user_id: currentUserId })
+        .single();
 
     return checkError(response);    
 }
@@ -35,18 +52,35 @@ export async function updateMiddle(value){
 
 export async function updateBottom(value){
     const currentUserId = client.auth.user().id;
-
+    
+    const response = await client
     // in supabase, update the bottom property
+        .from('characters')
+        .update({ bottom: value })
+
     // for the character whose user_id match's the currently logged in user's id
+        .match({ user_id: currentUserId })
+        .single();
 
     return checkError(response);    
 }
 
 export async function updateChatchphrases(value){
     const currentUserId = client.auth.user().id;
+    // get access to current characters catchphrases
+    // - update the catchphrases, push value to catchphrases array
 
+    
+    console.log(value);
+
+    const response = await client
     // in supabase, update the catchphrases property
+        .from('characters')
+    
+       // - update supabase with updated catchphrases array 
+        .update({ catchphrases: value })
     // for the character whose user_id match's the currently logged in user's id
+        .match({ user_id: currentUserId });
 
     return checkError(response);    
 }
