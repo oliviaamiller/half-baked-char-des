@@ -28,6 +28,8 @@ let headCount = 0;
 let middleCount = 0;
 let bottomCount = 0;
 
+let catchphrases = [];
+
 headDropdown.addEventListener('change', async() => {
     // increment the correct count in state
     headCount++;
@@ -58,18 +60,23 @@ bottomDropdown.addEventListener('change', async() => {
 });
 
 catchphraseButton.addEventListener('click', async() => {
-    catchphraseInput.value = '';
+
+    console.log(catchphraseInput.value);
 
     // go fetch the character and its old catchphrases
-    const character = await getCharacter();
+    await getCharacter();
 
     // update the catchphrases array locally by pushing the new catchphrase into the old array
-    character.catchphrase.push(catchphraseInput.value);
+    const newCatchphrase = catchphraseInput.value;
+
+    catchphrases.push(newCatchphrase);
 
     // update the catchphrases in supabase by passing the mutated array to the updateCatchphrases function
-    const updatedChar = await updateChatchphrases(character.catchphrase);
+    await updateChatchphrases(newCatchphrase);
 
-    refreshData(updatedChar);
+    catchphraseInput.value = '';
+
+    refreshData();
 });
 
 window.addEventListener('load', async() => {
@@ -86,7 +93,7 @@ window.addEventListener('load', async() => {
             catchphrases: [],
         };
 
-        character = await createCharacter(newCharacter);
+        await createCharacter(newCharacter);
     }
     // and put the character's catchphrases in state (we'll need to hold onto them for an interesting reason);
     // then call the refreshData function to set the DOM with the updated data
@@ -109,19 +116,23 @@ async function fetchAndDisplayCharacter() {
 
     // if the character has a head, display the head in the dom
     if (character.head) {
-        headEl.src = `../assets/${headDropdown.value}-head.png`;
+        headEl.style.backgroundImage = `url('../assets/${character.head}-head.png')`;
     }
     
     // if the character has a middle, display the middle in the dom
-    
+    if (character.middle) {
+        middleEl.style.backgroundImage = `url('../assets/${character.middle}-middle.png')`;
+    }
 
     // if the character has a pants, display the pants in the dom
-    
+    if (character.bottom) {
+        bottomEl.style.backgroundImage = `url('../assets/${character.bottom}-pants.png')`;
+    }
     
     // loop through catchphrases and display them to the dom (clearing out old dom if necessary)
     catchphrasesEl.textContent = '';
 
-    for (let catchphrase of character.catchphrases) {
+    for (let catchphrase of catchphrases) {
         const newCatchphraseEl = document.createElement('p');
 
         newCatchphraseEl.classList.add('new-catchphrase');
@@ -130,7 +141,6 @@ async function fetchAndDisplayCharacter() {
 
         catchphrasesEl.append(newCatchphraseEl);
     }
-    
 }
 
 function refreshData() {
