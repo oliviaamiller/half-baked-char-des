@@ -10,6 +10,12 @@ export async function createCharacter(character){
     };
 
     // use the newCharacter to create a single new character for this user in supabase
+
+    const response = await client 
+        .from('characters')
+        .insert([newCharacter])
+        .single();
+        
     return checkError(response);
 }
 
@@ -22,7 +28,7 @@ export async function updateHead(value){
         .update({ head: value })
 
     // for the character whose user_id match's the currently logged in user's id
-        .match({ user_id: currentUserId.user.id })
+        .match({ user_id: currentUserId })
         .single();
 
     return checkError(response);    
