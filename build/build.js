@@ -33,24 +33,27 @@ headDropdown.addEventListener('change', async() => {
     headCount++;
 
     // update the head in supabase with the correct data
-    const updatedChar = await updateHead(headDropdown.value);
-
-    refreshData(updatedChar);
+    await updateHead(headDropdown.value);
+    refreshData();
 });
 
 
 middleDropdown.addEventListener('change', async() => {
     // increment the correct count in state
-    
+    middleCount++;
+
     // update the middle in supabase with the correct data
+    await updateMiddle(middleDropdown.value);
     refreshData();
 });
 
 
 bottomDropdown.addEventListener('change', async() => {
     // increment the correct count in state
+    bottomCount++;
     
     // update the bottom in supabase with the correct data
+    await updateBottom(bottomDropdown.value);
     refreshData();
 });
 
